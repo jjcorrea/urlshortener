@@ -1,0 +1,19 @@
+spring:
+  profiles:
+    active: redis   # default: redis for production. in-memory is used for testing purposes
+
+logging:
+  level.: ERROR
+
+redis:
+  host: localhost  # Redis host
+  port: 6379       # Redis execution port
+  pass:            # Redis password
+
+shortener:
+  protocol: http   # url shortener (short url) protocol
+  host: localhost  # url shortener (short url) host
+  port: 8080       # Service execution port
+  stats:
+    maxRetries: 3          # Number of stats insertion retries, in case of failure.
+    extendedTimeout: 3000  # Timeout for expensive stats operations.

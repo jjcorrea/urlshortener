@@ -1,0 +1,74 @@
+group 'com.urlshortener'
+version '1.0-SNAPSHOT'
+
+buildscript {
+    ext {
+        springBootVersion = '1.3.2.RELEASE'
+    }
+    repositories {
+        mavenCentral()
+        jcenter()
+    }
+    dependencies {
+        classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
+    }
+}
+
+apply plugin: 'java'
+apply plugin: 'idea'
+apply plugin: 'spring-boot'
+
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    compile('io.vertx:vertx-core:3.2.1')
+    compile('io.vertx:vertx-web:3.2.1')
+    compile('io.vertx:vertx-codegen:3.2.1')
+    compile('org.projectlombok:lombok:1.16.6')
+    compile('org.springframework.boot:spring-boot-starter-redis:1.3.1.RELEASE')
+    compile('com.netflix.hystrix:hystrix-core:1.4.23')
+    compile("net.sf.dozer:dozer:5.4.0"){ exclude group: 'org.slf4j' }
+    compile('com.google.guava:guava:19.0')
+    compile('biz.paluch.redis:lettuce:3.2.Final')
+    testCompile('org.springframework.boot:spring-boot-starter-test:1.3.2.RELEASE')
+    testCompile('org.springframework:spring-web:4.2.4.RELEASE')
+    testCompile('javax.servlet:javax.servlet-api:3.0.1')
+}
+
+idea {
+    module {
+        downloadSources = true
+    }
+}
+
+configurations.all {
+    resolutionStrategy {
+        failOnVersionConflict()
+        force(
+            'commons-logging:commons-logging:1.2',
+            'io.netty:netty-common:4.0.31.Final',
+            'io.netty:netty-transport:4.0.31.Final',
+            'io.netty:netty-handler:4.0.31.Final',
+            'io.netty:netty-buffer:4.0.31.Final',
+            'io.netty:netty-codec:4.0.31.Final'
+        )
+    }
+}
+
+task setup {
+    dependsOn ideaModule, ideaProject
+    doLast {
+        copy {
+            from '.'
+            into '.idea/'
+            include '*.ipr'
+            rename { "modules.xml" }
+        }
+        project.delete "${project.name}.ipr"
+    }
+}
